@@ -1,17 +1,35 @@
 import React from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  console.log(email, password);
+  const navigate = useNavigate();
+
+  const { loading, handleRegister } = useAuth();
 
   const submitHandler = (e) => {
     e.preventDefault();
+    handleRegister({ name, email, password });
+
+    setEmail("");
+    setName("");
+    setPassword("");
+
+    navigate("/login");
   };
+
+  if (loading) {
+    return (
+      <main className="flex items-center justify-between">
+        <h1 className="text-2xl">Loading......</h1>
+      </main>
+    );
+  }
 
   return (
     <div>

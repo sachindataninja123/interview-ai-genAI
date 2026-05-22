@@ -92,7 +92,7 @@ const loginController = async (req, res) => {
     return res.status(200).json({
       message: "User login successfully",
       success: true,
-      safeUser,
+      user: safeUser,
       accessToken: accessToken,
     });
   } catch (error) {
@@ -182,5 +182,5 @@ module.exports = {
   loginController,
   profileController,
   logoutController,
-  refreshTokenController
+  refreshTokenController,
 };

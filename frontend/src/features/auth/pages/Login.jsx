@@ -1,16 +1,32 @@
 import React from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  console.log(email , password)
+  const navigate = useNavigate();
+
+  const { loading, handleLogin } = useAuth();
 
   const submitHandler = (e) => {
     e.preventDefault();
+    handleLogin({ email, password });
+
+    setEmail("");
+    setPassword("");
+    navigate("/");
   };
+
+  if (loading) {
+    return (
+      <main className="flex items-center justify-between">
+        <h1 className="text-2xl">Loading......</h1>
+      </main>
+    );
+  }
 
   return (
     <div>
@@ -44,9 +60,12 @@ const Login = () => {
             </button>
           </form>
 
-           <p className="text-right mt-6 text-sm text-gray-200">
+          <p className="text-right mt-6 text-sm text-gray-200">
             Don't have an account?{" "}
-            <Link to="/register" className="text-pink-400 text-md hover:underline">
+            <Link
+              to="/register"
+              className="text-pink-400 text-md hover:underline"
+            >
               Register
             </Link>
           </p>
