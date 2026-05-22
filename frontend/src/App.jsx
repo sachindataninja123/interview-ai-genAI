@@ -1,10 +1,11 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import Footer from "./components/Footer";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Navbar from "./components/Navbar";
+import Footer from "./features/auth/components/Footer";
+import Navbar from "./features/auth/components/Navbar";
+
+import Login from "./features/auth/pages/Login";
+import Register from "./features/auth/pages/Register";
+import Home from "./features/auth/pages/Home";
 
 const App = () => {
   return (
