@@ -11,9 +11,9 @@ const Login = () => {
 
   const { loading, handleLogin } = useAuth();
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
-    handleLogin({ email, password });
+    await handleLogin({ email, password });
 
     setEmail("");
     setPassword("");

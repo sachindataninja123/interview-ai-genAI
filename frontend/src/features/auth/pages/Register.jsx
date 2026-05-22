@@ -12,9 +12,9 @@ const Register = () => {
 
   const { loading, handleRegister } = useAuth();
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
-    handleRegister({ name, email, password });
+    await handleRegister({ name, email, password });
 
     setEmail("");
     setName("");

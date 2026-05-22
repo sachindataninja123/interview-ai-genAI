@@ -46,9 +46,22 @@ export const useAuth = () => {
 
   useEffect(() => {
     const getAndSetUser = async () => {
-      const data = await profile();
+      try {
+        const token = localStorage.getItem("token");
 
-      setUser(data.user);
+        if (!token) {
+          setLoading(false);
+          return;
+        }
+
+        const data = await profile();
+        setUser(data.user);
+      } catch (error) {
+        console.log("get user error", error);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
     };
 
     getAndSetUser();
