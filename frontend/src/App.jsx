@@ -6,6 +6,7 @@ import Login from "./features/auth/pages/Login";
 import Register from "./features/auth/pages/Register";
 import Protected from "./features/auth/components/Protected";
 import Home from "./features/interview/pages/Home";
+import InterviewPage from "./features/interview/pages/InterviewPage";
 
 const App = () => {
   return (
@@ -17,6 +18,14 @@ const App = () => {
             element={
               <Protected>
                 <Home />
+              </Protected>
+            }
+          />
+          <Route
+            path="/interview/:interviewId"
+            element={
+              <Protected>
+                <InterviewPage />
               </Protected>
             }
           />
