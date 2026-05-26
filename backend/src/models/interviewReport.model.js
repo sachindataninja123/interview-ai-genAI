@@ -94,12 +94,16 @@ const interviewReportSchema = new mongoose.Schema(
     matchScore: {
       type: Number,
       min: 0,
-      max: 0,
+      max: 100,
     },
     technicalQuestion: [technicalQuestionSchema],
     behavioralQuestion: [behavioralQuestionSchema],
     skillGap: [skillGapSchema],
     preparationPlan: [preparationPlanSchema],
+    user : {
+      type : mongoose.Schema.ObjectId,
+      ref : "user"
+    }
   },
   {
     timestamps: true,
