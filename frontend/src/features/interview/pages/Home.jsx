@@ -7,8 +7,37 @@ import {
   ShieldCheck,
   BrainCircuit,
 } from "lucide-react";
+import { useInterview } from "../hooks/useInterview";
+import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+  const { loading, generateReport } = useInterview();
+
+  const [jobDescription, setJobDescription] = useState(null);
+  const [selfDescription, setSelfDescription] = useState(null);
+
+  const resumeInputRef = useRef();
+  const navigate = useNavigate();
+
+  const handleGenerateReport = async () => {
+    const resumeFile = resumeInputRef.current.files[0];
+    const data = await generateReport({
+      jobDescription,
+      selfDescription,
+      resumeFile,
+    });
+    navigate(`/interview/${data._id}`);
+  };
+
+  if (loading) {
+    return (
+      <main className="text-gray-200 flex items-center justify-center h-screen">
+        <h1 className="text-3xl">Loading your interview plan...</h1>
+      </main>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#020617] text-white overflow-hidden">
       {/* Background Glow */}
@@ -66,6 +95,8 @@ const Home = () => {
             </div>
 
             <textarea
+              name={jobDescription}
+              onChange={(e) => setJobDescription(e.target.value)}
               rows="20"
               placeholder="Paste the complete job description here..."
               className="w-full h-125 bg-[#0F172A]/80 border border-slate-800 focus:border-pink-500 rounded-3xl px-5 py-5 outline-none resize-none text-white placeholder:text-slate-500 transition-all duration-300"
@@ -99,7 +130,12 @@ const Home = () => {
                   PDF files only • Max size 5MB
                 </p>
 
-                <input type="file" accept=".pdf" className="hidden" />
+                <input
+                  ref={resumeInputRef}
+                  type="file"
+                  accept=".pdf"
+                  className="hidden"
+                />
               </label>
 
               {/* Self Description */}
@@ -119,6 +155,8 @@ const Home = () => {
                 </div>
 
                 <textarea
+                  name={selfDescription}
+                  onChange={(e) => setSelfDescription(e.target.value)}
                   rows="6"
                   placeholder="Describe your skills, projects, strengths, experience and achievements..."
                   className="w-full bg-[#0F172A]/80 border mt-4 border-slate-800 focus:border-pink-500 rounded-3xl px-5 py-3 outline-none resize-none text-white placeholder:text-slate-500 transition-all duration-300"
@@ -127,7 +165,13 @@ const Home = () => {
             </div>
 
             <div className=" border flex items-center bg-pink-600 hover:bg-pink-700 transition-all duration-300 cursor-pointer justify-center border-white/10 backdrop-blur-xl rounded-2xl py-4 shadow-2xl">
-              <button type="submit" className="cursor-pointer ">Generate Interview Report</button>
+              <button
+                onClick={handleGenerateReport}
+                type="submit"
+                className="cursor-pointer "
+              >
+                Generate Interview Report
+              </button>
             </div>
           </div>
         </div>
