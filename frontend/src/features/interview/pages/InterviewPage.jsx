@@ -6,8 +6,10 @@ import {
   CircleAlert,
   Code2,
   Search,
+  Sparkles,
 } from "lucide-react";
 import { useInterview } from "../hooks/useInterview";
+import { useParams } from "react-router-dom";
 
 const tabs = [
   {
@@ -32,7 +34,9 @@ const tabs = [
 const InterviewDashboard = () => {
   const [activeTab, setActiveTab] = useState("technical");
 
-  const { report, loading } = useInterview();
+  const { interviewId } = useParams();
+
+  const { report, loading, getResumePdf } = useInterview();
 
   if (!report || loading) {
     return (
@@ -45,36 +49,49 @@ const InterviewDashboard = () => {
   return (
     <div className="min-h-screen bg-[#050816] text-white flex overflow-hidden">
       {/* LEFT SIDEBAR */}
-      <div className="w-55 bg-[#081120] border-r border-white/5 p-5 flex flex-col">
-        <div className="mb-10">
-          <h1 className="text-xl font-semibold tracking-wide">
-            Interview<span className="text-pink-500">AI</span>
-          </h1>
+      <div className="w-55 bg-[#081120] border-r border-white/5 p-5 flex flex-col justify-between">
+        <div>
+          <div className="mb-10">
+            <h1 className="text-xl font-semibold tracking-wide">
+              Interview<span className="text-pink-500">AI</span>
+            </h1>
+          </div>
+
+          <div className="space-y-2">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm transition-all duration-300 ${
+                    activeTab === tab.id
+                      ? "bg-pink-500/15 text-pink-400 border border-pink-500/20"
+                      : "hover:bg-white/4 text-slate-400"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <Icon size={16} />
+                    {tab.label}
+                  </div>
+
+                  <ChevronRight size={15} />
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        <div className="space-y-2">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm transition-all duration-300 ${
-                  activeTab === tab.id
-                    ? "bg-pink-500/15 text-pink-400 border border-pink-500/20"
-                    : "hover:bg-white/4 text-slate-400"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <Icon size={16} />
-                  {tab.label}
-                </div>
-
-                <ChevronRight size={15} />
-              </button>
-            );
-          })}
+        <div className="border flex items-center gap-1 bg-pink-600 hover:bg-pink-700 transition-all duration-300 cursor-pointer justify-center border-white/10 backdrop-blur-xl rounded-md py-3 px-1 ">
+          <Sparkles size={18} />
+          <button
+            onClick={() => {
+              getResumePdf(interviewId);
+            }}
+          >
+            Download Resume
+          </button>
         </div>
       </div>
 

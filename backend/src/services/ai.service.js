@@ -1,4 +1,5 @@
 const config = require("../config/config");
+const puppeteer = require("puppeteer");
 
 const Groq = require("groq-sdk");
 const client = new Groq({ apiKey: config.GROQ_API_KEY });
@@ -45,4 +46,98 @@ Job Description: ${jobDescription}`,
   }
 }
 
-module.exports = generateInterviewReport;
+async function generatePdfFromHtml(htmlContent) {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.setContent(htmlContent, { waitUntil: "networkidle0" });
+
+  const pdfBuffer = await page.pdf({
+    format: "A4",
+    margin: {
+      top: "15mm",
+      bottom: "20mm",
+      left: "13mm",
+      right: "13mm",
+    },
+  });
+
+  await browser.close();
+  return pdfBuffer;
+}
+
+async function generateResumePdf({
+  resume,
+
+  selfDescription,
+
+  jobDescription,
+}) {
+  const prompt = `
+
+Generate a professional ATS-friendly resume.
+
+Resume:
+
+${resume}
+
+Self Description:
+
+${selfDescription}
+
+Job Description:
+
+${jobDescription}
+
+IMPORTANT:
+
+Return ONLY valid JSON.
+Format:
+{
+  "html": "<complete html document>"
+}
+
+The html should:
+
+- Be complete HTML document
+- Include inline CSS
+- Be ATS friendly
+- Be professional
+- Fit in 1-2 pages
+
+`;
+
+  const response = await client.chat.completions.create({
+    model: "llama-3.3-70b-versatile",
+
+    messages: [
+      {
+        role: "user",
+        content: prompt,
+      },
+    ],
+
+    temperature: 0.7,
+  });
+
+  const content = response.choices[0].message.content;
+
+  const cleaned = content
+
+    .replace(/```json/g, "")
+
+    .replace(/```/g, "")
+
+    .trim();
+
+  try {
+    return JSON.parse(cleaned);
+  } catch (error) {
+    console.log("JSON Parse Error:", error);
+
+    console.log("RAW RESPONSE:", content);
+
+    throw new Error("Invalid JSON returned by AI");
+  }
+}
+
+module.exports = { generateResumePdf, generateInterviewReport , generatePdfFromHtml};

@@ -10,9 +10,12 @@ import {
 import { useInterview } from "../hooks/useInterview";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../auth/hooks/useAuth";
 
 const Home = () => {
   const { loading, generateReport, reports } = useInterview();
+
+  const { handleLogout } = useAuth();
 
   const [jobDescription, setJobDescription] = useState(null);
   const [selfDescription, setSelfDescription] = useState(null);
@@ -51,8 +54,11 @@ const Home = () => {
             Hire<span className="text-pink-500">Mind AI</span>
           </h1>
 
-          <button className="bg-white/10 hover:bg-white/20 border border-white/10 px-5 py-2 rounded-xl transition-all duration-300">
-            Dashboard
+          <button
+            onClick={handleLogout}
+            className="bg-pink-600 active:scale-95  hover:bg-white/20 border border-white/10 px-5 py-2 rounded-full transition-all duration-300 cursor-pointer"
+          >
+            Logout
           </button>
         </nav>
 
@@ -87,7 +93,7 @@ const Home = () => {
 
               <div>
                 <h2 className="text-xl font-semibold">Job Description</h2>
-
+                
                 <p className="text-slate-400 text-sm">
                   Paste the complete job role details
                 </p>

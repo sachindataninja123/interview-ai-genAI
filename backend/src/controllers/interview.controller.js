@@ -1,7 +1,10 @@
 const pdfparse = require("pdf-parse");
-const generateInterviewReport = require("../services/ai.service");
+const {
+  generateInterviewReport,
+  generateResumePdf,
+  generatePdfFromHtml,
+} = require("../services/ai.service");
 const interviewReportModel = require("../models/interviewReport.model");
-const { success } = require("zod");
 
 const generateInterviewReportController = async (req, res) => {
   try {
@@ -105,8 +108,51 @@ const getAllInterviewReports = async (req, res) => {
     });
   }
 };
+
+async function generateResumePdfController(req, res) {
+  try {
+    const { interviewReportId } = req.params;
+
+    const interviewReport =
+      await interviewReportModel.findById(interviewReportId);
+
+    if (!interviewReport) {
+      return res.status(404).json({
+        message: "Interview report not found.",
+      });
+    }
+
+    const { resume, jobDescription, selfDescription } = interviewReport;
+
+    // STEP 1 → Generate HTML
+    const result = await generateResumePdf({
+      resume,
+      jobDescription,
+      selfDescription,
+    });
+
+    // STEP 2 → Convert HTML to PDF
+    const pdfBuffer = await generatePdfFromHtml(result.html);
+
+    // STEP 3 → Send PDF
+    res.set({
+      "Content-Type": "application/pdf",
+      "Content-Disposition": `attachment; filename=resume_${interviewReportId}.pdf`,
+    });
+
+    res.send(pdfBuffer);
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to generate resume PDF",
+    });
+  }
+}
 module.exports = {
   generateInterviewReportController,
   getInterviewReportById,
   getAllInterviewReports,
+  generateResumePdfController,
 };
