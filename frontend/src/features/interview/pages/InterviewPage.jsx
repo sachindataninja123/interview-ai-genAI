@@ -32,9 +32,9 @@ const tabs = [
 const InterviewDashboard = () => {
   const [activeTab, setActiveTab] = useState("technical");
 
-  const { report } = useInterview();
+  const { report, loading } = useInterview();
 
-  if (!report) {
+  if (!report || loading) {
     return (
       <div className="min-h-screen bg-[#050816] text-3xl flex items-center justify-center text-gray-200">
         Loading Interview Report...

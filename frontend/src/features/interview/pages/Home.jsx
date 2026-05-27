@@ -12,7 +12,7 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  const { loading, generateReport } = useInterview();
+  const { loading, generateReport, reports } = useInterview();
 
   const [jobDescription, setJobDescription] = useState(null);
   const [selfDescription, setSelfDescription] = useState(null);
@@ -174,6 +174,77 @@ const Home = () => {
               </button>
             </div>
           </div>
+        </div>
+
+        <div className="mb-14">
+          {reports?.length > 0 && (
+            <section>
+              {/* Heading */}
+              <div className="flex items-center justify-between mb-8 mt-7">
+                <div>
+                  <h2 className="text-3xl font-bold text-white">
+                    My Recent Interviews
+                  </h2>
+
+                  <p className="text-slate-400 mt-2">
+                    Track your generated AI interview reports
+                  </p>
+                </div>
+
+                <div className="px-4 py-2 rounded-2xl bg-pink-500/10 border border-pink-500/20 text-pink-400 text-sm">
+                  {reports.length} Reports
+                </div>
+              </div>
+
+              {/* Cards */}
+              <ul className="flex w-full whitespace-nowrap overflow-x-auto gap-3 py-3">
+                {reports.map((report) => {
+                  return (
+                    <li
+                      key={report._id}
+                      onClick={() => navigate(`/interview/${report._id}`)}
+                      className="group shrink-0 w-100 relative overflow-hidden cursor-pointer rounded-2xl border border-white/10 bg-white/3 backdrop-blur-xl p-6 transition-all duration-300 hover:-translate-y-2 hover:border-pink-500/40 hover:bg-white/5 hover:shadow-[0_0_40px_rgba(236,72,153,0.15)]"
+                    >
+                      {/* Glow Effect */}
+                      <div className="absolute top-0 right-0 h-32 w-32 bg-pink-500/10 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+
+                      {/* Top Section */}
+                      <div className="relative z-10 flex items-start justify-between">
+                        <div>
+                          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/10 border border-pink-500/20 text-pink-400 text-xs font-medium mb-4">
+                            AI Interview
+                          </div>
+
+                          <h3 className="text-2xl font-semibold text-white leading-tight">
+                            {report.title || "Untitled Position"}
+                          </h3>
+
+                          <p className="text-slate-400 text-sm mt-3">
+                            Generated on{" "}
+                            {new Date(report.createdAt).toLocaleDateString()}
+                          </p>
+                        </div>
+
+                        {/* Match Score */}
+                        <div className="flex flex-col items-center justify-center h-20 w-20 rounded-full bg-linear-to-br from-pink-500/20 to-violet-500/20 border border-white/10">
+                          <span className="text-2xl font-bold text-white">
+                            {report.matchScore}%
+                          </span>
+
+                          <span className="text-[10px] uppercase tracking-wider text-slate-400">
+                            Match
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Divider */}
+                      <div className="h-px w-full bg-linear-to-r from-transparent via-white/10 to-transparent mt-3"></div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          )}
         </div>
 
         {/* Bottom Features */}
