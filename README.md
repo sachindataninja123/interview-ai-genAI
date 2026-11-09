@@ -4,7 +4,7 @@ An AI-powered interview preparation platform that analyzes your resume, self-des
 
 ---
 
-## Features
+## Features Related to Interview GenAI
 
 - Upload resume (PDF) and get a full interview report powered by AI
 - AI-generated technical and behavioral interview questions with answers
